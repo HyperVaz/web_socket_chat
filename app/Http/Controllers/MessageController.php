@@ -21,7 +21,7 @@ class MessageController extends Controller
     {
         $data = $request->validated();
         $message = Messages::create($data);
-        event(new StoreMessageEvent());
+        broadcast(new StoreMessageEvent($message))->toOthers();
         return MessageResource::make($message)->resolve();
     }
 }

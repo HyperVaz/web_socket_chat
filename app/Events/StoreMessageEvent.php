@@ -2,6 +2,9 @@
 
 namespace App\Events;
 
+use App\Http\Resources\Message\MessageResource;
+use App\Models\Messages;
+use http\Message;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -14,12 +17,15 @@ class StoreMessageEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    private Messages $message;
+
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(Messages $message)
     {
         //
+        $this->message = $message;
     }
 
     /**
@@ -37,5 +43,12 @@ class StoreMessageEvent implements ShouldBroadcast
     public function broadcastAs(): string
     {
         return 'store_message';
+    }
+
+    public function broadcastWith(): array
+    {
+        return [
+            'message' => MessageResource::make($this->message)->resolve()
+        ];
     }
 }
