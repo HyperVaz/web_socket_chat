@@ -23,10 +23,16 @@ export default {
             like_str: ''
         }
     },
+    created() {
+        window.Echo.private(`send_like_${this.$page.props.auth.user.id}`)
+            .listen('.send_like', res=>{
+                this.like_str = res.like_str;
+            })
+    },
     methods: {
         sendLike() {
-            axios.post(`/users/${this.user.id}`).then(res=>{
-                this.like_str = res.like_str
+            axios.post(`/users/${this.user.id}`, {from_id: this.$page.props.auth.user.id}).then(res=>{
+                this.like_str = res.data.like_str
             })
         },
     }
